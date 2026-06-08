@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 permissions:
   contents: write
 
@@ -15,30 +16,32 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker Image
+      - name: Build Image
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }} .
 
-      - name: Push Docker Image
+      - name: Push Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }}
 
-      - name: Update Kustomize Image
+      # ✅ CLONE MANIFEST REPO (IMPORTANT)
+      - name: Clone Manifest Repo
         run: |
-          sed -i 's|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }}|' kustomize/base/deployment.yaml
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/<your-username>/poc20-manifests.git
 
-      - name: Setup Git Auth
+      # ✅ UPDATE IMAGE TAG
+      - name: Update Deployment
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          cd poc20-manifests/base
+          sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }}|" deployment.yaml
 
-      - name: Commit & Push Changes
+      # ✅ COMMIT BACK TO MANIFEST REPO
+      - name: Commit & Push
         run: |
+          cd poc20-manifests
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update image tag"
+          git commit -m "Update image tag"
           git push
