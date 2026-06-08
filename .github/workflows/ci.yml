@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4   # ✅ FIXED (latest version)
+        uses: actions/checkout@v4
 
       - name: Login to Docker Hub
         run: |
@@ -37,11 +37,11 @@ jobs:
           cd poc20-manifests
           sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}|" deployment.yaml
 
-      - name: Commit & Push Changes
+      - name: Commit & Push
         run: |
           cd poc20-manifests
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
           git add .
-          git commit -m "Update image tag" || echo "No changes"
+          git commit -m "Update image tag" || echo "No changes to commit"
           git push
