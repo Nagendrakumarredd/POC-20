@@ -28,7 +28,7 @@ jobs:
       # ✅ CLONE MANIFEST REPO (IMPORTANT)
       - name: Clone Manifest Repo
         run: |
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/<your-username>/poc20-manifests.git
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Nagendrakumarredd/poc20-manifests.git
 
       # ✅ UPDATE IMAGE TAG
       - name: Update Deployment
