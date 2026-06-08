@@ -17,31 +17,28 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.syamalanagendrakumarredd }}" --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Build Image
-        run: docker build -t ${{ secrets.syamalanagendrakumarredd }}/poc20:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }} .
 
       - name: Push Image
-        run: docker push ${{ secrets.syamalanagendrakumarredd }}/poc20:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}
 
-      # ✅ CLONE MANIFEST REPO (IMPORTANT)
       - name: Clone Manifest Repo
         run: |
           git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Nagendrakumarredd/poc20-manifests.git
 
-      # ✅ UPDATE IMAGE TAG
       - name: Update Deployment
         run: |
-          cd poc20-manifests/base
-          sed -i "s|image:.*|image: ${{ secrets.syamalanagendrakumarredd }}/poc20:${{ github.sha }}|" deployment.yaml
+          cd poc20-manifests
+          sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}|" deployment.yaml
 
-      # ✅ COMMIT BACK TO MANIFEST REPO
       - name: Commit & Push
         run: |
           cd poc20-manifests
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add .
-          git commit -m "Update image tag"
+          git commit -m "Update image tag" || echo "No changes to commit"
           git push
