@@ -30,7 +30,7 @@ jobs:
 
       - name: Update Kustomize Image
         run: |
-            sed -i 's|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }}|' kustomize/base/deployment.yaml
+            sed -i 's|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }}|' https://github.com/Nagendrakumarredd/POC-20/blob/main/kustomize/base/deployment.yaml
  
       - name: Setup Git Auth
         run: |
