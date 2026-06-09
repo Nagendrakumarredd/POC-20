@@ -28,15 +28,14 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}
 
-      - name: Clone Manifest Repo
+      - name: Update Kustomize Image
         run: |
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Nagendrakumarredd/poc20-manifests.git
-
-      - name: Update Deployment
+            sed -i 's|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc20:${{ github.sha }}|' kustomize/base/deployment.yaml
+ 
+      - name: Setup Git Auth
         run: |
-          cd poc20-manifests
-          sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}|" deployment.yaml
-
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          
       - name: Commit & Push
         run: |
           cd poc20-manifests
