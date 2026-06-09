@@ -30,7 +30,7 @@ jobs:
 
       - name: Update Deployment
         run: |
-          sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}|" deployment.yaml
+          sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/poc-20:${{ github.sha }}|" kustomize/base/deployment.yaml
       - name: Setup Git Auth
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
