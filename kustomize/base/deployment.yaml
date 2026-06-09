@@ -17,6 +17,6 @@ spec:
       containers:
       - name: py-app
         # CHANGE 'YOUR_DOCKER_USERNAME' TO YOUR ACTUAL DOCKER HUB USERNAME
-        image: syamalanagendrakumarreddy/poc20:a2737a6162f44b754819ee7c21918644f55a3722
+        image: syamalanagendrakumarreddy/poc20:8ce4b21073cbbbb068cd528d1331bdc66bcd0b84
         ports:
         - containerPort: 8080
